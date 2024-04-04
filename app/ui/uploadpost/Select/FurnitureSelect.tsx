@@ -1,3 +1,4 @@
+import { URL } from "@/app/lib/Url";
 import { useState, useEffect } from "react";
 
 interface Furniture {
@@ -15,7 +16,7 @@ export default function FurnitureSelect({ onSelect }: FurnitureSelectProps) {
 
     async function getListFurniture() {
         try {
-            const response = await fetch('https://localhost:7149/FurnitureApi/getallfurniture');
+            const response = await fetch(`https://${URL}/FurnitureApi/getallfurniture`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

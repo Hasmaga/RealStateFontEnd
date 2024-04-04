@@ -1,10 +1,11 @@
+import { URL } from '@/app/lib/Url';
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 
 export default function DistrictSelect({ instanceId, onChange, className, cityId, isDisabled, placeholder = "Chọn"}: { instanceId: string, onChange: (selectedOption: any) => void, className: string, cityId: number, isDisabled: boolean, placeholder?: string}) {
     async function getOptions() {
         try {
-            const response = await fetch(`https://localhost:7149/locationapi/getdistricts?cityId=${cityId}`);
+            const response = await fetch(`https://${URL}/locationapi/getdistricts?cityId=${cityId}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

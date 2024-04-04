@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Image from 'next/image';
 import CommentPost from "@/app/ui/commentPost/commentPost";
+import { URL } from "@/app/lib/Url";
 
 interface images {
     image: string;
@@ -44,7 +45,7 @@ export default function Page({ params }: {
 
     async function getRentRealState() {
         try {
-            const response = await fetch(`https://localhost:7149/PostRealEstateApi/GetPostRealEstateById/${params.id}`);
+            const response = await fetch(`https://${URL}/PostRealEstateApi/GetPostRealEstateById/${params.id}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -70,10 +71,16 @@ export default function Page({ params }: {
         setPreviewImage(image);
     };
 
-
     return (
-        <div className="w-full flex justify-center pt-10 pl-52 pr-52 flex-row space-x-5 mb-10">
-            <div className="space-y-5 w-9/12">
+        <div className="w-full flex flex-col space-y-5 sm:space-y-0 sm:flex-row-reverse justify-center pl-10 pr-10 sm:pr-20 sm:pl-20 mb-10">
+            <div className="w-full sm:w-3/12 sm:ml-5">
+                <div className="flex border-2 rounded-lg flex-wrap flex-col items-center pt-5 pb-5 space-y-2">
+                    <p className="font-light text-xs">Được đăng bởi</p>
+                    <p className="font-semibold">{rentRealState?.contactName}</p>
+                    <p className="w-3/4 text-center pt-2 pb-2 shadow-lg rounded-lg bg-green-500 text-white">{rentRealState?.phone}</p>
+                </div>
+            </div>
+            <div className="space-y-5 w-full sm:w-9/12">
                 {/* Image Preview */}
                 <div className="w-full flex justify-center bg-slate-800">
                     <Image src={`data:image/jpeg;base64,${previewImage}`} alt="Preview" width={500} height={300} />
@@ -97,24 +104,25 @@ export default function Page({ params }: {
                     <p className="text-base font-light">{rentRealState?.address}, {rentRealState?.ward}, {rentRealState?.district}, {rentRealState?.city}</p>
                 </div>
 
-                <div className="border-t-2 pt-3 flex flex-row space-x-5">
-                    <div>
+                <div className="border-t-2 pt-3 flex flex-wrap">
+                    <div className="w-full sm:w-1/2 lg:w-1/5">
                         <p className="text-gray-500">Mức giá</p>
-                        <p className="font-semibold">{rentRealState?.price} {rentRealState?.priceUnit}</p>
+                        <p className="font-semibold">{rentRealState?.price.toLocaleString()} {rentRealState?.priceUnit} /
+                            tháng</p>
                     </div>
-                    <div>
+                    <div className="w-full sm:w-1/2 lg:w-1/5">
                         <p className="text-gray-500">Diện tích</p>
                         <p className="font-semibold">{rentRealState?.area} m2</p>
                     </div>
-                    <div>
+                    <div className="w-full sm:w-1/2 lg:w-1/5">
                         <p className="text-gray-500">Loại hình</p>
                         <p className="font-semibold">{rentRealState?.typeRealState}</p>
                     </div>
-                    <div>
+                    <div className="w-full sm:w-1/2 lg:w-1/5">
                         <p className="text-gray-500">Phòng Ngủ</p>
                         <p className="font-semibold">{rentRealState?.totalBedRoom} PN</p>
                     </div>
-                    <div>
+                    <div className="w-full sm:w-1/2 lg:w-1/5">
                         <p className="text-gray-500">Phòng tắm</p>
                         <p className="font-semibold">{rentRealState?.totalBathRoom} PT</p>
                     </div>
@@ -127,27 +135,27 @@ export default function Page({ params }: {
 
                 <div className="border-t-2 pt-3 w-full flex flex-wrap space-y-3">
                     <p className="text-xl font-semibold w-full">Đặc điểm bất động sản</p>
-                    <div className="w-1/2 flex flex-row justify-between pr-32">
+                    <div className="w-1/2 flex flex-row justify-between pr-3">
                         <p className="font-semibold">Diện tích</p>
                         <p>{rentRealState?.area} m2</p>
                     </div>
-                    <div className="w-1/2 flex flex-row justify-between pr-32">
+                    <div className="w-1/2 flex flex-row justify-between pr-3">
                         <p className="font-semibold">Số tầng</p>
                         <p>{rentRealState?.totalFloor}</p>
                     </div>
-                    <div className="w-1/2 flex flex-row justify-between pr-32">
+                    <div className="w-1/2 flex flex-row justify-between pr-3">
                         <p className="font-semibold">Số toilet</p>
                         <p>{rentRealState?.totalBathRoom}</p>
                     </div>
-                    <div className="w-1/2 flex flex-row justify-between pr-32">
+                    <div className="w-1/2 flex flex-row justify-between pr-3">
                         <p className="font-semibold">Nội thất</p>
                         <p>{rentRealState?.furniture}</p>
                     </div>
-                    <div className="w-1/2 flex flex-row justify-between pr-32">
+                    <div className="w-1/2 flex flex-row justify-between pr-3">
                         <p className="font-semibold">Mức giá</p>
-                        <p>{rentRealState?.price} {rentRealState?.priceUnit}</p>
+                        <p>{rentRealState?.price.toLocaleString()} {rentRealState?.priceUnit}/tháng</p>
                     </div>
-                    <div className="w-1/2 flex flex-row justify-between pr-32">
+                    <div className="w-1/2 flex flex-row justify-between pr-3">
                         <p className="font-semibold">Số phòng ngủ</p>
                         <p>{rentRealState?.totalBedRoom}</p>
                     </div>
@@ -156,15 +164,8 @@ export default function Page({ params }: {
                 <div className="border-t-2 pt-3 w-full">
                     <div>
                         <p className="text-xl font-semibold w-full">Comments</p>
-                        <CommentPost PostId={params.id} />                
+                        <CommentPost PostId={params.id} />
                     </div>
-                </div>
-            </div>
-            <div className="w-3/12 ">
-                <div className="flex border-2 rounded-lg flex-wrap flex-col items-center pt-5 pb-5 space-y-2">
-                    <p className="font-light text-xs">Được đăng bởi</p>
-                    <p className="font-semibold">{rentRealState?.contactName}</p>
-                    <p className="w-3/4 text-center pt-2 pb-2 shadow-lg rounded-lg bg-green-500 text-white">{rentRealState?.phone}</p>
                 </div>
             </div>
         </div>

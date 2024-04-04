@@ -12,8 +12,9 @@ import _ from 'lodash';
 import Image from 'next/image';
 import Logo from '@/public/LOGO.svg';
 import axios from "axios";
+import { URL } from "@/app/lib/Url";
 
-export default function Login() {    
+export default function Login() {
     const schema = z.object({
         email: z.string().email('You must enter a valid email').nonempty('You must enter an email'),
         password: z
@@ -40,50 +41,50 @@ export default function Login() {
         resolver: zodResolver(schema)
     });
 
-    const { isValid, dirtyFields, errors } = formState;    
+    const { isValid, dirtyFields, errors } = formState;
 
     const onSubmit = async (formData: FormType) => {
         const { email, password } = formData;
-    
+
         const data = {
             email,
             password
         };
-    
+
         const config = {
             method: 'post',
             maxBodyLength: Infinity,
-            url: 'https://localhost:7149/accountapi/login',
-            headers: { 
+            url: `https://${URL}/accountapi/login`,
+            headers: {
                 'Content-Type': 'application/json'
             },
-            data : data
+            data: data
         };
-    
+
         axios.request(config)
-        .then((response) => {
-            if (response.data === "Server Error") {
-                setError("remember", {
-                    type: "server",
-                    message: "Server Error. Please try again."
-                });
-            } else {                
-                localStorage.setItem('token', response.data);   
-                window.location.href = '/';         
-            }
-        })
+            .then((response) => {
+                if (response.data === "Server Error") {
+                    setError("remember", {
+                        type: "server",
+                        message: "Server Error. Please try again."
+                    });
+                } else {
+                    localStorage.setItem('token', response.data);
+                    window.location.href = '/';
+                }
+            })
     };
 
     return (
         <div className="flex w-full h-screen flex-row">
-            <div className="flex flex-col w-1/2 p-10">
+            <div className="flex flex-col flex-1 p-10">
                 <Link href="/" className="flex flex-wrap">
                     <Image src={Logo} alt="Rent House" height={125} />
                 </Link>
-                <p className="font-bold text-3xl">Sign in</p>
+                <p className="font-bold text-3xl">Đăng Nhập</p>
                 <div className="flex flex-row space-x-3">
-                    <p className="text-gray-500">Don't have an account?</p>
-                    <Link href="/register" className="underline text-sky-500">Sign up</Link>
+                    <p className="text-gray-500">Không có tài khoảng?</p>
+                    <Link href="/register" className="underline text-sky-500">Đăng ký tại đây</Link>
                 </div>
 
                 <div className="w-full">
@@ -148,14 +149,7 @@ export default function Login() {
                                         {errors.remember && <p>{errors.remember.message}</p>}
                                     </FormControl>
                                 )}
-                            />                           
-
-                            <Link
-                                className="text-md font-medium"
-                                href="/pages/auth/forgot-password"
-                            >
-                                Forgot password?
-                            </Link>
+                            />
                         </div>
 
                         <Button
@@ -172,9 +166,9 @@ export default function Login() {
                     </form>
                 </div>
             </div>
-            <div className="flex flex-col w-1/2 p-10 bg-[#59B4C3]">
-                <p className="font-bold text-3xl text-white">Welcome to the<br />FUSE React!</p>
-                <p className="text-white">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, felis sed ullamcorper.</p>
+            <div className="flex-col flex-1 p-10 bg-[#59B4C3] hidden sm:block">
+                <p className="font-bold text-3xl text-white">Welcome to the RENTHOUSE</p>
+                <p className="text-white">Nơi cung cấp dịch vụ thuê nhà, mua nhà, đăng tin 1 cách an toàn, hiệu quả</p>
             </div>
         </div>
     )

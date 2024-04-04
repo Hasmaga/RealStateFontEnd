@@ -8,6 +8,7 @@ import TypeRealEstateSelect from "@/app/ui/uploadpost/Select/TypeRealEstateSelec
 import WardSelect from "@/app/ui/uploadpost/Select/WardSelect";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { URL } from "@/app/lib/Url";
 
 interface post {
     name: string;
@@ -65,7 +66,7 @@ export default function Page({ params }: {
         const config = {
             method: 'get',
             maxBodyLength: Infinity,
-            url: `https://localhost:7149/PostRealEstateApi/GetCustomerPostRealEstateById/${params.id}`,
+            url: `https://${URL}/PostRealEstateApi/GetCustomerPostRealEstateById/${params.id}`,
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -107,7 +108,7 @@ export default function Page({ params }: {
         }
         console.log(data);
         try {
-            const response = await fetch('https://localhost:7149/PostRealEstateApi/UpdatePostRealEstate', {
+            const response = await fetch(`https://${URL}/PostRealEstateApi/UpdatePostRealEstate`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -125,7 +126,7 @@ export default function Page({ params }: {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="w-3/4 pt-10 pb-10">
+        <form onSubmit={handleSubmit} className="w-3/4 mt-10 mb-10 bg-white p-10 shadow-xl rounded-lg">
             <div>
                 <h1 className="text-3xl font-bold">Chỉnh sửa bài đăng</h1>
             </div>
@@ -262,7 +263,7 @@ export default function Page({ params }: {
 
                 <div className="border-t-2 w-full pt-5 mt-5 space-y-2">
                     <p className="text-xl font-bold text-green-500">Gói đang sử dụng</p>
-                    <div className="flex flex-row">
+                    <div className="flex flex-row justify-between">
                         <p>Loại gói</p>
                         <p>{post?.plan} </p>
                     </div>

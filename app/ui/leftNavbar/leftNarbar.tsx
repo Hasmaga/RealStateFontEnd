@@ -1,15 +1,11 @@
 'use client';
+import { User } from "@/app/lib/InterfacerLib";
+import { URL } from "@/app/lib/Url";
 import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-interface User {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phoneNumber: string;
-    wallet: string;
-}
+
 
 export default function LeftNavbar() {
     const [token, setToken] = useState<string | null>(null);
@@ -19,7 +15,7 @@ export default function LeftNavbar() {
         const config = {
             method: 'get',
             maxBodyLength: Infinity,
-            url: 'https://localhost:7149/accountapi/getaccount',
+            url: `https://${URL}/accountapi/getaccount`,
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -34,12 +30,14 @@ export default function LeftNavbar() {
     }
 
     useEffect(() => {
-        const localToken = localStorage.getItem('token');
-        setToken(localToken);
-        if (localToken) {
-            fetchUser(localToken);
+        if (!localStorage.getItem('token')) {
+            window.location.href = '/login';
         }
-    }, []);
+        setToken(localStorage.getItem('token'));
+        if (token) {
+            fetchUser(token);
+        }
+    }, [token]);
 
     const [isDropdownPostVisible, setDropdownPostVisible] = useState(false);
     const [isDropdownUserVisible, setDropdownUserVisible] = useState(false);

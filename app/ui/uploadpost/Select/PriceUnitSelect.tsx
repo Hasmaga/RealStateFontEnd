@@ -1,10 +1,11 @@
+import { URL } from '@/app/lib/Url';
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 
 export default function PriceUnitSelect({ instanceId, onChange, className, placeholder="Chọn" }: { instanceId: string, onChange: (selectedOption: any) => void, className: string, placeholder?: string}) {
     async function getOption() {
         try {
-            const response = await fetch('https://localhost:7149/PriceUnit/GetListPriceUnit');
+            const response = await fetch(`https://${URL}/PriceUnit/GetListPriceUnit`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

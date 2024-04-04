@@ -1,9 +1,10 @@
+import { URL } from '@/app/lib/Url';
 import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 
 async function getOptions() {
     try {
-        const response = await fetch('https://localhost:7149/locationapi/getallcity');
+        const response = await fetch(`https://${URL}/locationapi/getallcity`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

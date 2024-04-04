@@ -1,3 +1,4 @@
+import { URL } from "@/app/lib/Url";
 import { useEffect, useState } from "react";
 
 interface CommentPostProps {
@@ -14,7 +15,7 @@ export default function CommentPost({ PostId }: { PostId: string }) {
 
     async function getComments() {
         try {
-            const response = await fetch(`https://localhost:7149/CommentApi/GetListCommentByPostId/${PostId}`);
+            const response = await fetch(`https://${URL}/CommentApi/GetListCommentByPostId/${PostId}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -33,7 +34,7 @@ export default function CommentPost({ PostId }: { PostId: string }) {
     const handlePostComment = async () => {        
         if (comment) {
             try {
-                const response = await fetch('https://localhost:7149/CommentApi/CreateComment', {
+                const response = await fetch(`https://${URL}/CommentApi/CreateComment`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -56,7 +57,7 @@ export default function CommentPost({ PostId }: { PostId: string }) {
 
     const handleLike = async (commentId: string) => {
         try {
-            const response = await fetch(`https://localhost:7149/LikeApi/LikeComment/${commentId}`, {
+            const response = await fetch(`https://${URL}/LikeApi/LikeComment/${commentId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -10,17 +10,18 @@ export default function Home() {
   return (
     <div>
       <Navbar />
-      <div className='space-y-16'>
+      <div>
         <Banner />
-        <div>
-          <ListSellHouse />
-          <BannerBody />
-          <ListRentHouse />
-          <BannerWhyChoose />
-        </div>
+        <hr className='border-t-2 border-black ml-20 mr-20 mt-10 mb-10' />
+        <BannerWhyChoose />
+        <hr className='border-t-2 border-black ml-20 mr-20 mt-10 mb-10' />
+        <BannerBody />
+        <hr className='border-t-2 border-black ml-20 mr-20 mt-10 mb-10' />
+        <ListSellHouse />
+        <hr className='border-t-2 border-black ml-20 mr-20 mt-10 mb-10' />
+        <ListRentHouse />
       </div>
       <Footer />
     </div>
-
   )
 }

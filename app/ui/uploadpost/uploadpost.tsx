@@ -11,6 +11,7 @@ import SelectPlanDay from "./Plan/SelectPlanDay";
 import TypeRealEstateSelect from "./Select/TypeRealEstateSelect";
 import FurnitureSelect from "./Select/FurnitureSelect";
 import { Plan, PlanDay, SubmitPost, User } from '@/app/lib/InterfacerLib';
+import { URL } from '@/app/lib/Url';
 
 export default function UploadPost() {
     const [token, setToken] = useState<string | null>(null);
@@ -39,7 +40,7 @@ export default function UploadPost() {
     const [datePost, setDatePost] = useState('');
     const [timePost, setTimePost] = useState('');
     const [postId, setPostId] = useState('');
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<User>();
 
     const handleNext = () => {
         setPage(page + 1);
@@ -66,14 +67,16 @@ export default function UploadPost() {
     }
 
     useEffect(() => {
-        fetchUser(); // Fetch user information
-        if (!localStorage.getItem('token')) {
+        const tokenFromStorage = localStorage.getItem('token');
+        if (!tokenFromStorage) {
             window.location.href = '/login';
+        } else {
+            setToken(tokenFromStorage);
+            fetchUser(tokenFromStorage);
         }
-        setToken(localStorage.getItem('token'));
     }, []);
 
-    async function onSubmitInformation(): Promise<string | null> {        
+    async function onSubmitInformation(): Promise<string | null> {
         const formattedPostTime = `${timePost}:00.0000000`
         const submitPost: SubmitPost = {
             typeId: typeRealState,
@@ -100,7 +103,7 @@ export default function UploadPost() {
             postTime: formattedPostTime,
         };
         try {
-            const response = await axios.post('https://localhost:7149/PostRealEstateApi/CreatePost', submitPost, {
+            const response = await axios.post(`https://${URL}/PostRealEstateApi/CreatePost`, submitPost, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -117,17 +120,7 @@ export default function UploadPost() {
     }
 
     async function onSubmitImage(postId: string) {
-        // Check wallet balance of user is enough to pay for the post
-        if (user?.balance === undefined) {
-            return;
-        }
-        if (planDay?.priceDiscount === undefined) {
-            return;
-        }
-        if (Number(user.balance) < planDay.priceDiscount) {
-            alert('Số dư trong ví không đủ để đăng tin');
-            return;
-        }
+
         const myHeaders = {
             'Authorization': `Bearer ${token}`
         };
@@ -141,14 +134,18 @@ export default function UploadPost() {
             let blob = new Blob([new Uint8Array(array)], { type: 'image/jpeg' });
             data.append('Data', blob, `image${index}.jpg`);
         });
-        axios.post(`https://localhost:7149/ImageRealEstateApi/UploadImageRealEstate/${postId}`, data, {
+        axios.post(`https://${URL}/ImageRealEstateApi/UploadImageRealEstate/${postId}`, data, {
             headers: {
                 ...myHeaders,
                 'Content-Type': 'multipart/form-data'
             }
         })
             .then((response) => {
-                console.log(response.data);
+                if (response.status === 200) {
+                    alert('Đăng tin thành công');
+                }
+                // redirect to /seller/quan-ly-tin
+                window.location.href = '/seller/quan-ly-tin';
             })
             .catch((error) => {
                 console.error(error);
@@ -157,6 +154,13 @@ export default function UploadPost() {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        if (!planDay) {
+            return;
+        }
+        if (Number(user?.wallet) < planDay.priceDiscount) {
+            alert('Số dư trong ví không đủ để đăng tin');
+            return;
+        }
         onSubmitInformation().then(postId => {
             if (postId) {
                 onSubmitImage(postId);
@@ -164,14 +168,26 @@ export default function UploadPost() {
         });
     }
 
-    async function fetchUser() {
-        const response = await fetch('https://localhost:7149/UserAPI/GetUser', {
+    async function fetchUser(tokenFromStorage: string) {
+        const myHeaders = {
+            'Authorization': `Bearer ${tokenFromStorage}`
+        };
+        const config = {
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: `https://${URL}/accountapi/getaccount`,
             headers: {
-                'Authorization': `Bearer ${token}`
+                ...myHeaders,
+                'Content-Type': 'multipart/form-data'
             }
-        });
-        const data = await response.json();
-        setUser(data);
+        };
+
+        try {
+            const response = await axios.request(config);
+            setUser(response.data);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (

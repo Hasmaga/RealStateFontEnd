@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Plan } from '@/app/lib/InterfacerLib';
+import { URL } from '@/app/lib/Url';
 
 interface SelectPlanProps {
     onSelect: (plan : Plan) => void;
@@ -15,7 +16,7 @@ export default function SelectPlan({ onSelect }: SelectPlanProps) {
 
     async function getListPlan() {
         try {
-            const response = await fetch(`https://localhost:7149/PlanAPI/GetListPlanPriceResDto`);
+            const response = await fetch(`https://${URL}/PlanAPI/GetListPlanPriceResDto`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

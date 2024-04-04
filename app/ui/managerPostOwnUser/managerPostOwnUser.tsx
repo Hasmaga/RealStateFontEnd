@@ -5,6 +5,7 @@ import Link from "next/link";
 import area from '@/public/area.svg';
 import bedroom from '@/public/bedroom.svg';
 import bathroom from '@/public/bathroom.svg';
+import { URL } from "@/app/lib/Url";
 
 
 interface RentRealStateProps {
@@ -30,7 +31,7 @@ export default function ManagerPostOwnUser() {
 
     async function getRentRealStates() {
         try {
-            const response = await fetch(`https://localhost:7149/PostRealEstateApi/GetPostRealEstateByCutomerId`, {
+            const response = await fetch(`https://${URL}/PostRealEstateApi/GetPostRealEstateByCutomerId`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

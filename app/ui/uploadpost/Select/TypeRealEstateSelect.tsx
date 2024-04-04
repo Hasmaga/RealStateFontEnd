@@ -1,3 +1,4 @@
+import { URL } from "@/app/lib/Url";
 import { useEffect, useState } from "react";
 
 interface TypeRealEstate {
@@ -15,7 +16,7 @@ export default function TypeRealEstateSelect({ onSelect }: TypeRealEstateSelectP
     
     async function getListTypeRealEstate() {
         try{
-            const response = await fetch('https://localhost:7149/TypeRealEstateApi/GetListTypeRealEstate');
+            const response = await fetch(`https://${URL}/TypeRealEstateApi/GetListTypeRealEstate`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);            
             }

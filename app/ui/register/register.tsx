@@ -4,13 +4,12 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import _ from 'lodash';
 import Image from 'next/image';
 import Logo from '@/public/LOGO.svg';
+import { URL } from "@/app/lib/Url";
+import axios from "axios";
 
 export default function Register() {
 
@@ -58,27 +57,69 @@ export default function Register() {
 
     const { isValid, dirtyFields, errors } = formState;
 
+    async function Register(formData: FormType) {
+        console.log('Register function called with formData:', formData);
+        const data = {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            password: formData.password,
+            phoneNumber: formData.phoneNumber
+        };
+
+        const config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: `https://${URL}/accountapi/createaccount`,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+
+        try {
+            const response = await axios.request(config);
+            if (response.status === 200) {
+                alert('Account created successfully');
+                window.location.href = '/login';
+            } else {
+                setError("email", {
+                    type: "server",
+                    message: "Server Error. Please try again."
+                });
+                alert('Account creation failed');
+            }
+        } catch (error) {
+            setError("email", {
+                type: "server",
+                message: "Server Error. Please try again."
+            });
+            alert('Account creation failed');
+        }
+    }
+
     const onSubmit = async (formData: FormType) => {
-        const { firstName, lastName, email, password, phoneNumber } = formData;
+        console.log('onSubmit function called with formData:', formData);
+        await Register(formData);
     };
 
     return (
         <div className="flex w-full h-screen flex-row">
-            <div className="flex flex-col w-1/2 p-10">
+            <div className="flex flex-col flex-1 p-10 pt-2">
                 <Link href="/" className="flex flex-wrap">
-                    <Image src={Logo} alt="Rent House" height={125} />
+                    <Image src={Logo} alt="Rent House" height={100} />
                 </Link>
-                <p className="font-bold text-3xl">Sign Up</p>
+                <p className="font-bold text-3xl">Đăng ký</p>
                 <div className="flex flex-row space-x-3">
-                    <p className="text-gray-500">Already have Account?</p>
-                    <Link href="/login" className="underline text-sky-500">Sign in</Link>
+                    <p className="text-gray-500">Đã có tài khoảng?</p>
+                    <Link href="/login" className="underline text-sky-500">Đăng nhập tại đây</Link>
                 </div>
 
                 <div className="w-full">
                     <form
                         name="loginForm"
                         noValidate
-                        className="mt-8 flex w-full flex-col justify-center space-y-2"
+                        className="mt-1 flex w-full flex-col justify-center space-y-1"
                         onSubmit={handleSubmit(onSubmit)}
                     >
                         <Controller
@@ -199,12 +240,12 @@ export default function Register() {
                             type="submit"
                             size="large"
                         >
-                            Sign in
+                            Sign up
                         </Button>
                     </form>
                 </div>
             </div>
-            <div className="flex flex-col w-1/2 p-10 bg-[#59B4C3]">
+            <div className="flex-col flex-1 p-10 bg-[#59B4C3] hidden sm:block">
                 <p className="font-bold text-3xl text-white">Welcome to the<br />FUSE React!</p>
                 <p className="text-white">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, felis sed ullamcorper.</p>
             </div>

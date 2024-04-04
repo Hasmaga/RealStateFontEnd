@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { PlanDay, Plan } from "@/app/lib/InterfacerLib";
+import { URL } from "@/app/lib/Url";
 
 interface SelectPlanDayProps {
     onSelect: (planDay: PlanDay) => void;
@@ -13,7 +14,7 @@ export default function SelectPlanDay({ onSelect, plan }: SelectPlanDayProps & {
         if (!plan?.planId) return; // If planId is not set, don't fetch data
 
         try {
-            const response = await fetch(`https://localhost:7149/PlanAPI/GetPlanPriceOfDayByPlanId?planId=${plan.planId}`);
+            const response = await fetch(`https://${URL}/PlanAPI/GetPlanPriceOfDayByPlanId?planId=${plan.planId}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -27,13 +28,16 @@ export default function SelectPlanDay({ onSelect, plan }: SelectPlanDayProps & {
             console.error("Failed to fetch plans:", error)
         }
     }
-    
-    if (plan?.planId) {
-        useEffect(() => {
-            getListPlanDay()
-        }, [plan.planId]);
-    }
-    
+
+
+    useEffect(() => {
+        if (plan)
+        {
+            getListPlanDay();
+        }        
+    }, [plan?.planId]);
+
+
     function handleSelect(planDay: PlanDay) {
         setSelectPlanDayId(planDay.planDayId);
         onSelect(planDay);
